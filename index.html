@@ -3,130 +3,764 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Лумория</title>
-  <meta name="description" content="Лумория — скоро открытие">
+  <title>Лумория — Люксовый шёлк для сна и заботы</title>
+  <meta name="description" content="Лумория — люксовые наборы из натурального шёлка: наволочки, маски для сна, резинки для волос. Забота о вашей красоте каждую ночь.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #53565A;
+      --bg-light: #5e6165;
+      --accent: #8D6E97;
+      --accent-soft: rgba(141, 110, 151, 0.15);
+      --cream: #f0ebe3;
+      --cream-dim: rgba(240, 235, 227, 0.7);
+      --cream-faint: rgba(240, 235, 227, 0.08);
+      --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      --sans: 'Raleway', 'Helvetica Neue', sans-serif;
+    }
+
     *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #53565A;
-      overflow: hidden;
-      position: relative;
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
     }
 
-    /* soft noise grain overlay */
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE OVERLAY ─── */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
       background-size: 256px 256px;
       pointer-events: none;
-      z-index: 1;
+      z-index: 9999;
     }
 
-    /* radial glow */
-    body::after {
-      content: '';
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 800px;
-      height: 800px;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(
-        ellipse at center,
-        rgba(141, 110, 151, 0.08) 0%,
-        rgba(141, 110, 151, 0.03) 40%,
-        transparent 70%
-      );
-      pointer-events: none;
-      z-index: 0;
+    /* ─── REVEAL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.15s; }
+    .reveal-delay-2 { transition-delay: 0.3s; }
+    .reveal-delay-3 { transition-delay: 0.45s; }
+
+    /* ─── TYPOGRAPHY ─── */
+    h1, h2, h3, h4 {
+      font-family: var(--serif);
+      font-weight: 300;
+    }
+    h2 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+    h3 {
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      line-height: 1.3;
+    }
+    p {
+      font-size: clamp(0.88rem, 1.4vw, 1rem);
+      max-width: 560px;
     }
 
-    .container {
-      position: relative;
-      z-index: 2;
+    .label {
+      font-family: var(--sans);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 1.2rem;
+    }
+
+    .thin-line {
+      width: 40px;
+      height: 1px;
+      background: rgba(141, 110, 151, 0.3);
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3rem;
+      justify-content: center;
+      position: relative;
+      gap: 2.5rem;
     }
 
-    .logo-wrap {
-      opacity: 0;
-      transform: translateY(16px);
-      animation: rise 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 900px;
+      height: 900px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(141,110,151,0.07) 0%, transparent 65%);
+      pointer-events: none;
     }
 
-    .logo {
-      width: min(480px, 85vw);
+    .hero-logo {
+      width: min(440px, 80vw);
       height: auto;
-      filter: drop-shadow(0 0 80px rgba(141, 110, 151, 0.06));
-      transition: filter 0.8s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: heroRise 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+      position: relative;
+      z-index: 1;
     }
 
-    .logo:hover {
-      filter: drop-shadow(0 0 100px rgba(141, 110, 151, 0.16));
+    .hero-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: heroRise 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards;
+      position: relative;
+      z-index: 1;
     }
 
-    .bottom {
+    .hero-tagline {
+      font-family: var(--serif);
+      font-size: clamp(1rem, 2.2vw, 1.35rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream-dim);
+      letter-spacing: 0.04em;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      opacity: 0;
+      animation: heroRise 1s cubic-bezier(0.22, 1, 0.36, 1) 1.8s forwards;
+      z-index: 1;
+    }
+
+    .hero-scroll span {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(141, 110, 151, 0.35);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 32px;
+      background: linear-gradient(to bottom, rgba(141,110,151,0.3), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes heroRise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    /* ─── SECTION LAYOUT ─── */
+    section {
+      padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 6vw, 6rem);
+    }
+
+    .section-narrow {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .section-wide {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ─── ABOUT / PHILOSOPHY ─── */
+    .philosophy {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.8rem;
+    }
+
+    .philosophy p {
+      color: var(--cream-dim);
+      max-width: 620px;
+    }
+
+    .philosophy-quote {
+      font-family: var(--serif);
+      font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.4;
+      max-width: 700px;
+      color: var(--cream);
+      margin: 1.5rem 0;
+    }
+
+    /* ─── SILK STORY ─── */
+    .silk-story {
+      position: relative;
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem, 6vw, 5rem);
+      align-items: center;
+    }
+
+    .story-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .story-text p {
+      color: var(--cream-dim);
+    }
+
+    .story-visual {
+      position: relative;
+      aspect-ratio: 4/5;
+      background: var(--cream-faint);
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .story-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(141,110,151,0.08), transparent 60%);
+    }
+
+    .visual-placeholder {
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      font-style: italic;
+      color: rgba(141, 110, 151, 0.4);
+      text-align: center;
+      padding: 2rem;
+    }
+
+    /* ─── BENEFITS ─── */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(2rem, 4vw, 3.5rem);
+      margin-top: 3rem;
+    }
+
+    .benefit-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: clamp(1.5rem, 3vw, 2.5rem);
+      border: 1px solid var(--cream-faint);
+      border-radius: 2px;
+      transition: border-color 0.5s ease, background 0.5s ease;
+    }
+
+    .benefit-card:hover {
+      border-color: rgba(141, 110, 151, 0.2);
+      background: rgba(141, 110, 151, 0.03);
+    }
+
+    .benefit-icon {
+      font-size: 1.6rem;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .benefit-card h3 {
+      font-size: 1.2rem;
+    }
+
+    .benefit-card p {
+      font-size: 0.85rem;
+      color: var(--cream-dim);
+      max-width: none;
+    }
+
+    /* ─── PRODUCTS ─── */
+    .products-intro {
+      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1.4rem;
-      opacity: 0;
-      transform: translateY(12px);
-      animation: rise 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.8s forwards;
+      margin-bottom: clamp(3rem, 6vw, 5rem);
     }
 
-    .divider {
-      width: 32px;
-      height: 1px;
-      background: rgba(141, 110, 151, 0.25);
+    .products-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1.5rem, 3vw, 2.5rem);
     }
 
-    .tagline {
-      font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      transition: transform 0.5s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .product-image {
+      aspect-ratio: 3/4;
+      background: var(--cream-faint);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-image::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 60%, rgba(83,86,90,0.4));
+    }
+
+    .product-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding: 0 0.3rem;
+    }
+
+    .product-info h3 {
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+    }
+
+    .product-info p {
+      font-size: 0.82rem;
+      color: var(--cream-dim);
+      max-width: none;
+    }
+
+    /* ─── PROCESS ─── */
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+      counter-reset: step;
+    }
+
+    .step {
+      counter-increment: step;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      position: relative;
+      padding-top: 2.5rem;
+    }
+
+    .step::before {
+      content: counter(step, decimal-leading-zero);
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: rgba(141, 110, 151, 0.25);
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .step h4 {
+      font-size: 1.1rem;
+    }
+
+    .step p {
+      font-size: 0.82rem;
+      color: var(--cream-dim);
+      max-width: none;
+    }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      padding-top: clamp(5rem, 12vw, 10rem);
+      padding-bottom: clamp(5rem, 12vw, 10rem);
+      position: relative;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 600px;
+      height: 600px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(141,110,151,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .cta-section h2 {
+      font-style: italic;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-section p {
+      color: var(--cream-dim);
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 0.9rem 2.8rem;
+      border: 1px solid var(--accent);
+      color: var(--cream);
+      font-family: var(--sans);
       font-size: 0.7rem;
-      font-weight: 400;
-      letter-spacing: 0.4em;
+      font-weight: 500;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: rgba(141, 110, 151, 0.5);
+      text-decoration: none;
+      border-radius: 0;
+      transition: background 0.4s ease, color 0.4s ease;
+      position: relative;
+      z-index: 1;
     }
 
-    @keyframes rise {
-      to {
-        opacity: 1;
-        transform: translateY(0);
+    .cta-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 3rem clamp(1.5rem, 6vw, 6rem);
+      border-top: 1px solid var(--cream-faint);
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      width: 120px;
+      height: auto;
+      opacity: 0.5;
+    }
+
+    .footer-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: rgba(240, 235, 227, 0.35);
+    }
+
+    .footer-right a {
+      color: var(--accent);
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .footer-right a:hover {
+      opacity: 1;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .story-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .story-visual {
+        aspect-ratio: 3/2;
+      }
+      .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .products-row {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .product-image {
+        aspect-ratio: 4/3;
+      }
+      .process-steps {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+      }
+      .footer-inner {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+      }
+      .footer-right {
+        align-items: center;
       }
     }
 
     @media (max-width: 480px) {
-      .logo { width: 75vw; }
-      .tagline { font-size: 0.6rem; letter-spacing: 0.3em; }
-      .bottom { gap: 1rem; }
+      .process-steps {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="logo-wrap">
-      <img src="lumoria_logo.svg" alt="Лумория" class="logo">
+
+  <!-- ════ HERO ════ -->
+  <section class="hero">
+    <img src="lumoria_logo.svg" alt="Лумория" class="hero-logo">
+    <div class="hero-bottom">
+      <div class="thin-line"></div>
+      <p class="hero-tagline">Роскошь натурального шёлка</p>
     </div>
-    <div class="bottom">
-      <div class="divider"></div>
-      <p class="tagline">Скоро открытие</p>
+    <div class="hero-scroll">
+      <span>Узнать больше</span>
+      <div class="scroll-line"></div>
     </div>
-  </div>
+  </section>
+
+  <!-- ════ PHILOSOPHY ════ -->
+  <section>
+    <div class="section-narrow philosophy">
+      <span class="label reveal">Философия</span>
+      <h2 class="reveal reveal-delay-1">Красота начинается<br>с заботы о себе</h2>
+      <div class="thin-line reveal reveal-delay-2"></div>
+      <p class="reveal reveal-delay-2">
+        Лумория — это ритуал ежедневной заботы. Мы создаём люксовые наборы из натурального шёлка Mulberry высшего сорта 6A, чтобы каждая ночь становилась инвестицией в вашу красоту и здоровье.
+      </p>
+      <p class="philosophy-quote reveal reveal-delay-3">
+        «Шёлк — единственная ткань, которая заботится о вас, пока вы спите»
+      </p>
+    </div>
+  </section>
+
+  <!-- ════ SILK STORY ════ -->
+  <section class="silk-story">
+    <div class="section-wide">
+      <div class="story-grid">
+        <div class="story-text">
+          <span class="label reveal">История шёлка</span>
+          <h2 class="reveal reveal-delay-1">5000 лет<br>совершенства</h2>
+          <p class="reveal reveal-delay-2">
+            История шёлка началась в Древнем Китае около 3000 года до н.э. Согласно легенде, императрица Лэйцзу обнаружила шёлковую нить, когда кокон тутового шелкопряда случайно упал в её чашку чая.
+          </p>
+          <p class="reveal reveal-delay-3">
+            Тысячелетиями шёлк оставался тайной Востока и ценился дороже золота. Его перевозили по Великому шёлковому пути — торговому маршруту длиной 12 000 километров. Сегодня мы используем те же природные свойства этой удивительной ткани для вашей ежедневной заботы.
+          </p>
+        </div>
+        <div class="story-visual reveal">
+          <span class="visual-placeholder">Фото: шёлковые нити</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ BENEFITS ════ -->
+  <section>
+    <div class="section-wide">
+      <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:1.4rem;">
+        <span class="label reveal">Почему шёлк</span>
+        <h2 class="reveal reveal-delay-1">Шёлк работает,<br>пока вы отдыхаете</h2>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">✦</div>
+          <h3>Здоровье кожи</h3>
+          <p>Натуральный белок серицин в составе шёлка удерживает влагу у кожи. В отличие от хлопка, шёлк не впитывает ночной крем и не сушит лицо — вы просыпаетесь с увлажнённой, отдохнувшей кожей.</p>
+        </div>
+        <div class="benefit-card reveal reveal-delay-1">
+          <div class="benefit-icon">✦</div>
+          <h3>Красота волос</h3>
+          <p>Гладкая поверхность шёлка снижает трение в 7 раз по сравнению с хлопком. Волосы не путаются, не ломаются и не электризуются. Шёлковые резинки не оставляют заломов.</p>
+        </div>
+        <div class="benefit-card reveal reveal-delay-2">
+          <div class="benefit-icon">✦</div>
+          <h3>Качество сна</h3>
+          <p>Шёлк естественно терморегулирует: охлаждает летом и сохраняет тепло зимой. Шёлковая маска мягко блокирует свет, не давит на глаза и позволяет коже вокруг глаз дышать.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">✦</div>
+          <h3>Гипоаллергенность</h3>
+          <p>Шёлк от природы устойчив к пылевым клещам, плесени и бактериям. Это идеальный выбор для чувствительной и склонной к аллергии кожи.</p>
+        </div>
+        <div class="benefit-card reveal reveal-delay-1">
+          <div class="benefit-icon">✦</div>
+          <h3>Anti-age эффект</h3>
+          <p>Исследования показывают: сон на шёлковой наволочке уменьшает появление «заломов сна» — морщин, которые со временем становятся постоянными на хлопковых подушках.</p>
+        </div>
+        <div class="benefit-card reveal reveal-delay-2">
+          <div class="benefit-icon">✦</div>
+          <h3>Долговечность</h3>
+          <p>Шёлк Mulberry 6A — самый прочный натуральный текстиль. При правильном уходе изделия сохраняют свой блеск и свойства годами, становясь выгодной инвестицией.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ PRODUCTS ════ -->
+  <section>
+    <div class="section-wide">
+      <div class="products-intro">
+        <span class="label reveal">Коллекция</span>
+        <h2 class="reveal reveal-delay-1">Всё для вашего<br>шёлкового ритуала</h2>
+        <p class="reveal reveal-delay-2">Каждое изделие создано из 100% натурального шёлка Mulberry сорта 6A с плотностью 22 momme — золотой стандарт для люксового шёлка.</p>
+      </div>
+      <div class="products-row">
+        <div class="product-card reveal">
+          <div class="product-image">
+            <span class="visual-placeholder">Фото: наволочка</span>
+          </div>
+          <div class="product-info">
+            <h3>Шёлковая наволочка</h3>
+            <p>Инвестиция в кожу и волосы. Невесомая прохлада шёлка дарит крепкий сон без заломов и секущихся кончиков. Потайная молния, стандартные размеры.</p>
+          </div>
+        </div>
+        <div class="product-card reveal reveal-delay-1">
+          <div class="product-image">
+            <span class="visual-placeholder">Фото: маска для сна</span>
+          </div>
+          <div class="product-info">
+            <h3>Маска для сна</h3>
+            <p>Абсолютная темнота и нежность. Эргономичная форма не давит на глаза, регулируемая резинка из шёлка не оставляет следов. Подходит для путешествий.</p>
+          </div>
+        </div>
+        <div class="product-card reveal reveal-delay-2">
+          <div class="product-image">
+            <span class="visual-placeholder">Фото: резинки</span>
+          </div>
+          <div class="product-info">
+            <h3>Резинки для волос</h3>
+            <p>Надёжная фиксация без заломов и повреждений. Тонкий шёлк бережно обхватывает волосы, сохраняя укладку.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ PROCESS ════ -->
+  <section>
+    <div class="section-wide">
+      <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:1.4rem; margin-bottom: 1rem;">
+        <span class="label reveal">Производство</span>
+        <h2 class="reveal reveal-delay-1">Путь от кокона<br>до вашей подушки</h2>
+      </div>
+      <div class="process-steps">
+        <div class="step reveal">
+          <h4>Выращивание</h4>
+          <p>Шелкопряды питаются исключительно свежими листьями тутового дерева в течение 30 дней, формируя кокон из одной непрерывной нити длиной до 1500 метров.</p>
+        </div>
+        <div class="step reveal reveal-delay-1">
+          <h4>Отбор</h4>
+          <p>Мы используем только шёлк сорта 6A — высшей категории. Это менее 10% от мирового объёма, где каждая нить идеально ровная, длинная и прочная.</p>
+        </div>
+        <div class="step reveal reveal-delay-2">
+          <h4>Плетение</h4>
+          <p>Нити сплетаются в ткань плотностью 22 momme — идеальный баланс между роскошной тяжестью и воздушной лёгкостью. Charmeuse-сатиновое плетение даёт характерный блеск.</p>
+        </div>
+        <div class="step reveal reveal-delay-3">
+          <h4>Пошив</h4>
+          <p>Каждое изделие шьётся вручную. Никакого клея, синтетических нитей или компромиссов. Финальный контроль — на ощупь и на просвет.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ CTA ════ -->
+  <section class="cta-section">
+    <div class="section-narrow" style="display:flex; flex-direction:column; align-items:center; gap:2rem;">
+      <span class="label reveal">Скоро в продаже</span>
+      <h2 class="reveal reveal-delay-1">Подарите себе<br>шёлковый сон</h2>
+      <p class="reveal reveal-delay-2" style="text-align:center;">
+        Мы готовим запуск первой коллекции. Оставьте контакт, чтобы узнать о старте продаж первыми и получить скидку на первый заказ.
+      </p>
+      <a href="mailto:info@lumoria.moscow" class="cta-btn reveal reveal-delay-3">Написать нам</a>
+    </div>
+  </section>
+
+  <!-- ════ FOOTER ════ -->
+  <footer>
+    <div class="footer-inner">
+      <img src="lumoria_logo.svg" alt="Лумория" class="footer-logo">
+      <div class="footer-right">
+        <a href="mailto:info@lumoria.moscow">info@lumoria.moscow</a>
+        <span>&copy; 2026 Лумория</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ════ SCROLL REVEAL JS ════ -->
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
 </body>
 </html>
